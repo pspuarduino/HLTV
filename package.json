@@ -5,10 +5,9 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "prepare": "npm run test && npm run build",
+    "prepare": "npm run build",
     "build": "tsc",
     "start": "ts-node src/playground",
-    "test": "jest",
     "pretty": "prettier --write \"**/*.ts\""
   },
   "repository": "git+https://github.com/gigobyte/HLTV.git",
@@ -19,20 +18,6 @@
     "parser",
     "csgo"
   ],
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
-  },
   "prettier": {
     "semi": false,
     "printWidth": 100,
@@ -50,7 +35,7 @@
     "@types/jest": "^24.0.0",
     "@types/request": "^2.47.1",
     "@types/socket.io-client": "^1.4.32",
-    "jest": "^24.1.0",
+    "jest": "^24.9.0",
     "prettier": "^1.16.4",
     "ts-jest": "^24.0.0",
     "ts-node": "^8.0.2",
