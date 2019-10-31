@@ -223,20 +223,20 @@ export const getMatch = (config: HLTVConfig) => async ({
       viewers: Number(streamEl.find('.viewers').text())
     }))
 
-  if ($('.stream-box.hltv-live').length !== 0) {
-    streams.push({ name: 'HLTV Live', link: $('.stream-box.hltv-live a').attr('href'), viewers: 0 })
-  }
-
-  if ($('.stream-box.gotv').length !== 0) {
-    streams.push({
-      name: 'GOTV',
-      link: $('.stream-box.gotv')
-        .text()
-        .replace('GOTV: connect', '')
-        .trim(),
-      viewers: 0
-    })
-  }
+  // if ($('.stream-box.hltv-live').length !== 0) {
+  //   streams.push({ name: 'HLTV Live', link: $('.stream-box.hltv-live a').attr('href'), viewers: 0 })
+  // }
+  //
+  // if ($('.stream-box.gotv').length !== 0) {
+  //   streams.push({
+  //     name: 'GOTV',
+  //     link: $('.stream-box.gotv')
+  //       .text()
+  //       .replace('GOTV: connect', '')
+  //       .trim(),
+  //     viewers: 0
+  //   })
+  // }
 
   const demos: Demo[] = toArray($('div[class="stream-box"]:not(:has(.stream-box-embed))')).map(
     demoEl => {
