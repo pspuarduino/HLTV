@@ -11,7 +11,7 @@ import { Veto } from '../models/Veto'
 import { HeadToHeadResult } from '../models/HeadToHeadResult'
 import { MapSlug } from '../enums/MapSlug'
 import { MatchStatus } from '../enums/MatchStatus'
-import { popSlashSource, hasChild, hasNoChild, percentageToDecimalOdd } from '../utils/parsing'
+import { popSlashSource, hasNoChild, percentageToDecimalOdd } from '../utils/parsing'
 import { HLTVConfig } from '../config'
 import {
   fetchPage,
@@ -217,9 +217,8 @@ export const getMatch = (config: HLTVConfig) => async ({
   }
 
   let streams: Stream[] = toArray($('.stream-box-embed'))
-    .filter(hasChild('.flagAlign'))
     .map(streamEl => ({
-      name: streamEl.find('.flagAlign').text(),
+      name: streamEl.text(),
       link: streamEl.attr('data-stream-embed'),
       viewers: Number(streamEl.find('.viewers').text())
     }))
