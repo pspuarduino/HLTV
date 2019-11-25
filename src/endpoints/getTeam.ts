@@ -74,19 +74,7 @@ export const getTeam = (config: HLTVConfig) => async ({
     rankingDevelopment = []
   }
 
-  const bigAchievements: Achievement[] = toArray(t$('.achievement')).map(achEl => ({
-    place: t$(achEl.contents().get(1))
-      .text()
-      .split(' at')[0],
-    event: {
-      name: t$(achEl.contents().get(2)).text(),
-      id: Number(
-        t$(achEl.contents().get(2))
-          .attr('href')
-          .split('/')[2]
-      )
-    }
-  }))
+  const bigAchievements: Achievement[] = []
 
   const mapStatisticsGraphElement = t$(t$('.graph').get(1))
 
