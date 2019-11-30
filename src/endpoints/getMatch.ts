@@ -262,46 +262,46 @@ export const getMatch = (config: HLTVConfig) => async ({
       }
     : undefined
 
-  let headToHead: HeadToHeadResult[] | undefined
+  let headToHead: HeadToHeadResult[] | undefined = [];
 
   if (team1 && team2) {
-    headToHead = toArray($('.head-to-head-listing tr')).map(matchEl => {
-      const date = Number(matchEl.find('.date a span').attr('data-unix'))
-      const map = matchEl.find('.dynamic-map-name-short').text() as MapSlug
-      const isDraw = matchEl.find('.winner').length === 0
-
-      let winner: Team | undefined
-
-      if (!isDraw) {
-        winner = {
-          name: matchEl
-            .find('.winner .flag')
-            .next()
-            .text(),
-          id: Number(
-            matchEl
-              .find('.winner .flag')
-              .next()
-              .attr('href')
-              .split('/')[2]
-          )
-        }
-      }
-
-      const event = {
-        name: matchEl.find('.event a').text(),
-        id: Number(
-          matchEl
-            .find('.event a')
-            .attr('href')
-            .split('/')[2]
-        )
-      }
-
-      const result = matchEl.find('.result').text()
-
-      return { date, map, winner, event, result }
-    })
+    // headToHead = toArray($('.head-to-head-listing tr')).map(matchEl => {
+    //   const date = Number(matchEl.find('.date a span').attr('data-unix'))
+    //   const map = matchEl.find('.dynamic-map-name-short').text() as MapSlug
+    //   const isDraw = matchEl.find('.winner').length === 0
+    //
+    //   let winner: Team | undefined
+    //
+    //   if (!isDraw) {
+    //     winner = {
+    //       name: matchEl
+    //         .find('.winner .flag')
+    //         .next()
+    //         .text(),
+    //       id: Number(
+    //         matchEl
+    //           .find('.winner .flag')
+    //           .next()
+    //           .attr('href')
+    //           .split('/')[2]
+    //       )
+    //     }
+    //   }
+    //
+    //   const event = {
+    //     name: matchEl.find('.event a').text(),
+    //     id: Number(
+    //       matchEl
+    //         .find('.event a')
+    //         .attr('href')
+    //         .split('/')[2]
+    //     )
+    //   }
+    //
+    //   const result = matchEl.find('.result').text()
+    //
+    //   return { date, map, winner, event, result }
+    // })
   }
 
   let highlights: Highlight[] | undefined
