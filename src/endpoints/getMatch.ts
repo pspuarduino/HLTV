@@ -181,18 +181,25 @@ export const getMatch = (config: HLTVConfig) => async ({
     }
   }
 
-  const maps: MapResult[] = toArray($('.mapholder')).map(mapEl => ({
-    name: getMapSlug(mapEl.find('.mapname').text()),
-    result: mapEl.find('.results span').text(),
-    statsId: mapEl.find('.results-stats').length
-      ? Number(
-          mapEl
-            .find('.results-stats')
-            .attr('href')
-            .split('/')[4]
-        )
-      : undefined
-  }))
+  const maps: MapResult[] = toArray($('.mapholder')).map(mapEl => {
+
+    const score = mapEl.find('.results-center-half-score').text();
+    const leftTeamResult = mapEl.find('.results-left .results-team-score').text();
+    const rightTeamResult = mapEl.find('.results-right .results-team-score').text();
+
+    return {
+        name: getMapSlug(mapEl.find('.mapname').text()),
+        result: `${leftTeamResult}:${rightTeamResult}${score}`,
+        statsId: mapEl.find('.results-stats').length
+            ? Number(
+                mapEl
+                    .find('.results-stats')
+                    .attr('href')
+                    .split('/')[4]
+            )
+            : undefined
+    }
+  });
 
   let players: { team1: Player[]; team2: Player[] } | undefined
 
