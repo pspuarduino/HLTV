@@ -222,11 +222,11 @@ export const getMatch = (config: HLTVConfig) => async ({
     }
   }
 
-  let streams: Stream[] = toArray($('.stream-box-embed'))
+  let streams: Stream[] = toArray($('.stream-box:not(.hltv-live)'))
     .map(streamEl => ({
-      name: streamEl.text(),
-      link: streamEl.attr('data-stream-embed'),
-      viewers: Number(streamEl.find('.viewers').text()),
+      name: streamEl.find('.stream-box-embed').text(),
+      link: streamEl.find('.stream-box-embed').attr('data-stream-embed'),
+      viewers: Number(streamEl.find('.viewers.gtSmartphone-only').text()),
       country_code: streamEl.find('.stream-flag').attr('src')!.split('/').pop()!.split('.').shift(),
       country_name: streamEl.find('.stream-flag').attr('alt')!,
     }))
