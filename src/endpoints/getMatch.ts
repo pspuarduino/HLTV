@@ -226,7 +226,9 @@ export const getMatch = (config: HLTVConfig) => async ({
     .map(streamEl => ({
       name: streamEl.text(),
       link: streamEl.attr('data-stream-embed'),
-      viewers: Number(streamEl.find('.viewers').text())
+      viewers: Number(streamEl.find('.viewers').text()),
+      country_code: streamEl.find('.stream-flag').attr('src')!.split('/').pop()!.split('.').shift(),
+      country_name: streamEl.find('.stream-flag').attr('alt')!,
     }))
 
   // if ($('.stream-box.hltv-live').length !== 0) {
