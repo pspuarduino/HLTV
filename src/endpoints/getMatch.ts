@@ -223,13 +223,26 @@ export const getMatch = (config: HLTVConfig) => async ({
   }
 
   let streams: Stream[] = toArray($('.stream-box:not(.hltv-live)'))
-    .map(streamEl => ({
-      name: streamEl.find('.stream-box-embed').text(),
-      link: streamEl.find('.stream-box-embed').attr('data-stream-embed'),
-      viewers: Number(streamEl.find('.viewers.gtSmartphone-only').text()),
-      country_code: streamEl.find('.stream-flag').attr('src')!.split('/').pop()!.split('.').shift(),
-      country_name: streamEl.find('.stream-flag').attr('alt')!,
-    }))
+    .map(streamEl => {
+
+        const flag = streamEl.find('.stream-flag');
+
+        const streamBox = streamEl.find('.stream-box-embed');
+
+        const country_code = flag.attr('src')
+            ? flag.attr('src').split('/').pop()!.split('.').shift()
+            : '';
+
+        const country_name = flag.attr('alt');
+
+        return {
+            country_code,
+            country_name,
+            name: streamBox.text(),
+            link: streamBox.attr('data-stream-embed'),
+            viewers: Number(streamEl.find('.viewers.gtSmartphone-only').text()),
+        }
+    })
 
   // if ($('.stream-box.hltv-live').length !== 0) {
   //   streams.push({ name: 'HLTV Live', link: $('.stream-box.hltv-live a').attr('href'), viewers: 0 })
