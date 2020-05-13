@@ -227,7 +227,9 @@ export const getMatch = (config: HLTVConfig) => async ({
 
         const flag = streamEl.find('.stream-flag');
 
-        const streamBox = streamEl.find('.stream-box-embed');
+        const streamBox = streamEl.attr('data-stream-embed')
+            ? streamEl
+            : streamEl.find('.stream-box-embed');
 
         const country_code = flag.attr('src')
             ? flag.attr('src').split('/').pop()!.split('.').shift()
