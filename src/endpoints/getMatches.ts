@@ -5,7 +5,7 @@ import { Team } from '../models/Team'
 import { MapSlug } from '../enums/MapSlug'
 import { popSlashSource, text } from '../utils/parsing'
 import { HLTVConfig } from '../config'
-import { fetchPage, toArray, getMatchFormatAndMap } from '../utils/mappers'
+import { extractEventId, fetchPage, toArray } from '../utils/mappers'
 
 export const getMatches = (config: HLTVConfig) => async (): Promise<
   (UpcomingMatch | LiveMatch)[]
@@ -38,44 +38,45 @@ export const getMatches = (config: HLTVConfig) => async (): Promise<
     return { id, team1, team2, event, format, maps, stars, live: true }
   })
 
-  const upcomingMatches: UpcomingMatch[] = toArray($('.upcoming-match')).map(matchEl => {
+  const upcomingMatches: UpcomingMatch[] = toArray($('.upcomingMatch')).map(matchEl => {
+
+    if (matchEl.find('.matchInfoEmpty').length) return;
+
     const id = Number(matchEl.find('a.a-reset').attr('href').split('/')[2])
-    const date = Number(matchEl.find('div.time').attr('data-unix')) || undefined
-    const title = matchEl.find('.placeholder-text-cell').text() || undefined
-    const stars = matchEl.find('.stars i').length
+    const date = Number(matchEl.find('div.matchTime').attr('data-unix')) || undefined
+    const title = matchEl.find('.matchEvent .matchEventName').text() || undefined
+    const stars = 5 - matchEl.find('.matchRating i.fa-star.faded').length
 
-    const { map, format } = getMatchFormatAndMap(matchEl.find('.map-text').text())
+    const format = matchEl.find('.matchMeta').text();
+    const map = undefined;
 
-    let event: Event | undefined
-    let team1: Team | undefined
-    let team2: Team | undefined
+    let event: Event | undefined;
+    let team1: Team | undefined;
+    let team2: Team | undefined;
 
-    if (!title) {
-      team1 = {
-        name: matchEl
-          .find('div.team')
-          .first()
-          .text(),
-        id: Number(popSlashSource(matchEl.find('img.logo').first())) || undefined
-      }
+    team1 = {
+      name: matchEl
+        .find('.matchTeam.team1 .matchTeamName')
+        .first()
+        .text(),
+      id: Number(matchEl.attr('team1')),
+    };
 
-      team2 = {
-        name: matchEl
-          .find('div.team')
-          .last()
-          .text(),
-        id: matchEl.find('img.logo').get(1)
-          ? Number(popSlashSource($(matchEl.find('img.logo').last())))
-          : undefined
-      }
-      event = {
-        name: matchEl.find('.event-logo').attr('alt'),
-        id: Number(popSlashSource(matchEl.find('img.event-logo'))!.split('.')[0]) || undefined
-      }
-    }
+    team2 = {
+      name: matchEl
+        .find('.matchTeam.team2 .matchTeamName')
+        .first()
+        .text(),
+      id: Number(matchEl.attr('team2')),
+    };
 
-    return { id, date, team1, team2, format, map, title, event, stars, live: false }
-  })
+    event = {
+      name: matchEl.find('.matchEvent .matchEventName').text(),
+      id: extractEventId(matchEl),
+    };
+
+    return { id, date, team1, team2, format, map, title, event, stars, live: false } as any;
+  }).filter(Boolean);
 
   return [...liveMatches, ...upcomingMatches]
 }

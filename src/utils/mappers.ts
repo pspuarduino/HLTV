@@ -158,3 +158,10 @@ export const getTimestamp = (source: string): number => {
 
   return new Date([month, day, year].join('/')).getTime()
 }
+
+export const extractEventId = (element: any): number => {
+  return Number(element.find('.matchEvent img.matchEventLogo')
+    .attr('src')
+    .split('/').pop()
+    .split('.').shift());
+}
