@@ -52,7 +52,9 @@ export const getResults = (config: HLTVConfig) => async ({
               .text()
           }
 
-          const result = matchEl.find('.result-score').text()
+          const result = matchEl
+            .find('.result-score').text()
+            .split(' - ').filter(Boolean).map(Number);
           const { map, format } = getMatchFormatAndMap(matchEl.find('.map-text').text()) as {
             map: MapSlug | undefined
             format: string

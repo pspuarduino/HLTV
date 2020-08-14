@@ -1,73 +1,88 @@
 import * as io from 'socket.io-client'
 import { ScoreboardUpdate } from '../models/ScoreboardUpdate'
 import { LogUpdate } from '../models/LogUpdate'
-import { fetchPage } from '../utils/mappers'
 import { HLTVConfig } from '../config'
+import { getRandomInteger } from '../utils/get-random-int';
+const HttpsProxyAgent = require('https-proxy-agent');
 
 export type ConnectToScorebotParams = {
-  id: number
+  ids: number[]
+  sockets: string[]
   onScoreboardUpdate?: (data: ScoreboardUpdate) => any
   onLogUpdate?: (data: LogUpdate) => any
   onFullLogUpdate?: (data: unknown) => any
   onConnect?: () => any
+  onScoreUpdate?: (data) => any
   onDisconnect?: () => any
+  proxyUrl?: string
 }
 
-export const connectToScorebot = (config: HLTVConfig) => async ({
-  id,
-  onScoreboardUpdate,
-  onLogUpdate,
-  onFullLogUpdate,
-  onConnect,
-  onDisconnect
-}: ConnectToScorebotParams) => {
-  const $ = await fetchPage(`${config.hltvUrl}/matches/${id}/-`, config.loadPage)
-  const url = $('#scoreboardElement')
-    .attr('data-scorebot-url')
-    .split(',')
-    .pop()!
-  const matchId = $('#scoreboardElement').attr('data-scorebot-id')
+export const connectToScorebot = (config: HLTVConfig) => async (
+  {
+    ids,
+    onScoreboardUpdate,
+    onLogUpdate,
+    onFullLogUpdate,
+    onScoreUpdate,
+    onConnect,
+    onDisconnect,
+    proxyUrl,
+    sockets,
+  }: ConnectToScorebotParams) => {
 
-  const socket = io.connect(url)
+  const agent = new HttpsProxyAgent(proxyUrl);
 
-  const initObject = JSON.stringify({
+  const randomEndpoint = sockets[getRandomInteger(0, sockets.length - 1)];
+
+  const socket = io.connect(randomEndpoint, { agent: agent });
+
+  const initScoreObject = JSON.stringify({
     token: '',
-    listId: matchId
-  })
+    listIds: ids,
+  });
 
   socket.on('connect', () => {
     if (onConnect) {
       onConnect()
     }
 
-    socket.emit('readyForMatch', initObject)
-
     socket.on('scoreboard', data => {
       if (onScoreboardUpdate) {
         onScoreboardUpdate(data)
       }
-    })
+    });
+
+    socket.on('score', data => {
+      if (onScoreUpdate) {
+        onScoreUpdate(data)
+      }
+    });
 
     socket.on('log', data => {
       if (onLogUpdate) {
         onLogUpdate(JSON.parse(data))
       }
-    })
+    });
 
     socket.on('fullLog', data => {
       if (onFullLogUpdate) {
         onFullLogUpdate(JSON.parse(data))
       }
-    })
-  })
+    });
+
+    socket.emit('readyForScores', initScoreObject);
+
+  });
 
   socket.on('reconnect', () => {
-    socket.emit('readyForMatch', initObject)
-  })
+    socket.emit('readyForScores', initScoreObject)
+  });
 
   socket.on('disconnect', () => {
     if (onDisconnect) {
       onDisconnect()
     }
-  })
-}
+  });
+
+  return socket;
+};

@@ -9,7 +9,7 @@ export interface MatchResult {
   readonly format: string
   readonly event: Event
   readonly map?: MapSlug
-  readonly result: string
+  readonly result: number[]
   readonly stars: number
   readonly date: number
 }
