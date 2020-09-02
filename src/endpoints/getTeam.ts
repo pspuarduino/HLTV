@@ -10,7 +10,6 @@ export const getTeam = (config: HLTVConfig) => async ({
   id: number
 }): Promise<FullTeam> => {
   const t$ = await fetchPage(`${config.hltvUrl}/team/${id}/-`, config.loadPage)
-  const e$ = await fetchPage(`${config.hltvUrl}/events?team=${id}`, config.loadPage)
 
   const name = t$('.profile-team-name').text()
   const logo = `${config.hltvStaticUrl}/images/team/logo/${id}`
@@ -83,24 +82,6 @@ export const getTeam = (config: HLTVConfig) => async ({
       ? getMapsStatistics(mapStatisticsGraphElement.attr('data-fusionchart-config'))
       : undefined
 
-  const events = toArray(e$('a.big-event'))
-    .map(eventEl => ({
-      name: eventEl.find('.big-event-name').text(),
-      id: Number(eventEl.attr('href').split('/')[2])
-    }))
-    .concat(
-      toArray(e$('a.small-event')).map(eventEl => ({
-        name: eventEl.find('.event-col .text-ellipsis').text(),
-        id: Number(eventEl.attr('href').split('/')[2])
-      }))
-    )
-    .concat(
-      toArray(e$('.tab-content:not(.hidden) a.ongoing-event')).map(eventEl => ({
-        name: eventEl.find('.event-name-small .text-ellipsis').text(),
-        id: Number(eventEl.attr('href').split('/')[2])
-      }))
-    )
-
   return {
     id,
     name,
@@ -115,6 +96,5 @@ export const getTeam = (config: HLTVConfig) => async ({
     rankingDevelopment,
     bigAchievements,
     mapStatistics,
-    events
   }
 }

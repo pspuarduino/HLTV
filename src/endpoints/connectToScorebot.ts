@@ -30,11 +30,16 @@ export const connectToScorebot = (config: HLTVConfig) => async (
     sockets,
   }: ConnectToScorebotParams) => {
 
-  const agent = new HttpsProxyAgent(proxyUrl);
-
+  let socket;
   const randomEndpoint = sockets[getRandomInteger(0, sockets.length - 1)];
 
-  const socket = io.connect(randomEndpoint, { agent: agent });
+  if (proxyUrl) {
+      const agent = new HttpsProxyAgent(proxyUrl);
+      socket = io.connect(randomEndpoint, { agent: agent });
+  } else {
+      socket = io.connect(randomEndpoint);
+  }
+
 
   const initScoreObject = JSON.stringify({
     token: '',

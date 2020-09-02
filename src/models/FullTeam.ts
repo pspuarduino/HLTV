@@ -35,5 +35,4 @@ export interface FullTeam {
   readonly rankingDevelopment: number[]
   readonly bigAchievements: Achievement[]
   readonly mapStatistics?: { [key: string]: MapStatistic }
-  readonly events: Event[]
 }
